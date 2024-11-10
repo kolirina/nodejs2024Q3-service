@@ -1,10 +1,11 @@
-import { IsString, Length } from 'class-validator';
+import { IsString, IsNotEmpty } from 'class-validator';
+
 export class CreateUserDto {
   @IsString()
-  @Length(3, 20)
+  @IsNotEmpty()
   login: string;
 
   @IsString()
-  @Length(8, 50)
+  @IsNotEmpty()
   password: string;
 }
