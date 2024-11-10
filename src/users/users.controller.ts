@@ -6,74 +6,52 @@ import {
   Delete,
   Param,
   Body,
-  HttpException,
   HttpStatus,
   HttpCode,
+  ClassSerializerInterceptor,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { validate } from 'uuid';
+import { UUIDvalidate } from 'src/UUID.validator';
 
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('user')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
+  @HttpCode(HttpStatus.OK)
   getAllUsers() {
     const users = this.usersService.getAll();
     return users.length ? users : [];
   }
 
   @Get(':id')
-  getUserById(@Param('id') id: string) {
-    if (!validate(id)) {
-      throw new HttpException('Invalid ID', HttpStatus.BAD_REQUEST);
-    }
-    const user = this.usersService.getById(id);
-    if (!user) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    }
-    return user;
+  @HttpCode(HttpStatus.OK)
+  getUserById(@Param('id', UUIDvalidate) id: string) {
+    return this.usersService.getById(id);
   }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
   createUser(@Body() createUserDto: CreateUserDto) {
-    if (!createUserDto.login || !createUserDto.password) {
-      throw new HttpException('Invalid data', HttpStatus.BAD_REQUEST);
-    }
     return this.usersService.create(createUserDto);
   }
 
   @Put(':id')
+  @HttpCode(HttpStatus.OK)
   updateUser(
-    @Param('id') id: string,
-    @Body() updatePasswordDto: UpdatePasswordDto,
+    @Param('id', UUIDvalidate) id: string,
+    @Body() updatePasswordDto: UpdateUserDto,
   ) {
-    if (!validate(id)) {
-      throw new HttpException('Invalid ID', HttpStatus.BAD_REQUEST);
-    }
-    const updated = this.usersService.update(id, updatePasswordDto);
-    if (!updated) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    }
-    return {
-      status: 'success',
-      message: 'Password updated successfully',
-    };
+    return this.usersService.update(id, updatePasswordDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteUser(@Param('id') id: string) {
-    if (!validate(id)) {
-      throw new HttpException('Invalid ID', HttpStatus.BAD_REQUEST);
-    }
-    const deleted = this.usersService.delete(id);
-    if (!deleted) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    }
-    return;
+  deleteUser(@Param('id', UUIDvalidate) id: string) {
+    return this.usersService.delete(id);
   }
 }
