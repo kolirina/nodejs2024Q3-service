@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  login     String   @unique
+  password  String
+  version   Int
+  createAt  Int
+  updateAt  Int
+  albums    Album[]  @relation("UserAlbums")
+  tracks    Track[]  @relation("UserTracks") 
+}
+model Artist {
+  id      String   @id @default(uuid())
+  name    String
+  grammy  Boolean
+  albums  Album[]
+  tracks  Track[]
+}
+model Album {
+  id       String   @id @default(uuid())
+  name     String
+  year     Int
+  artistId String?
+  userId   String? 
+  artist   Artist?   @relation(fields: [artistId], references: [id])
+  user     User?     @relation(fields: [userId], references: [id], name: "UserAlbums")
+  tracks   Track[]
+}
+model Track {
+  id       String   @id @default(uuid())
+  name     String
+  duration Int
+  artistId String?
+  albumId  String?
+  userId   String? 
+  artist   Artist?   @relation(fields: [artistId], references: [id])
+  album    Album?    @relation(fields: [albumId], references: [id])
+  user     User?     @relation(fields: [userId], references: [id], name: "UserTracks")
+}
+model Favorites {
+  artists  String[]
+  albums   String[]
+  tracks   String[]
+  @@unique([artists, albums, tracks])
+}
