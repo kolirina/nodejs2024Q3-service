@@ -50,3 +50,11 @@ When the application is running, open a new terminal and run all tests without a
 ```
 npm run test
 ```
+
+## To run Prisma Studio
+
+Replace `DATABASE_URL` in `.env` with `"postgresql://test:qwerty@localhost:5432/mydb?schema=public"` ans run
+
+```
+npx prisma studio
+```
