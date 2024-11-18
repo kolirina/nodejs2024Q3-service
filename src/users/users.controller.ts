@@ -24,8 +24,7 @@ export class UsersController {
   @Get()
   @HttpCode(HttpStatus.OK)
   getAllUsers() {
-    const users = this.usersService.getAll();
-    return users.length ? users : [];
+    return this.usersService.getAll();
   }
 
   @Get(':id')
