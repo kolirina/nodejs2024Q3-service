@@ -5,68 +5,56 @@
 - Git - [Download & Install Git](https://git-scm.com/downloads).
 - Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
 
-## Downloading
+## Download repository and change branch
 
 ```
-git clone {repository URL}
+git clone https://github.com/kolirina/nodejs2023Q2-service.git
+
+git checkout dev-2
 ```
 
-## Installing NPM modules
+## Install NPM modules
 
 ```
 npm install
 ```
 
-## Running application
+## Install Docker
 
 ```
-npm start
+Install [Docker](https://docs.docker.com/engine/install/)
+
+after installing run docker
 ```
 
-After starting the app on port (4000 as default) you can open
-in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
-For more information about OpenAPI/Swagger please visit https://swagger.io/.
+## Run the application using docker
+
+```
+docker compose up
+```
+
+The app starts on port (4000 as default)
+To change port use .env file
+Available endpoints description: https://github.com/AlreadyBored/nodejs-assignments/blob/main/assignments/rest-service/assignment.md
+
+## Vulnerabilities scanning
+
+```
+npm run audit
+```
 
 ## Testing
 
-After application running open new terminal and enter:
-
-To run all tests without authorization
+When the application is running, open a new terminal and run all tests without authorization:
 
 ```
 npm run test
 ```
 
-To run only one of all test suites
+## To run Prisma Studio
+
+Replace `DATABASE_URL` in `.env` with `"postgresql://test:qwerty@localhost:5432/mydb?schema=public"` ans run
 
 ```
-npm run test -- <path to suite>
+npx prisma studio
 ```
-
-To run all test with authorization
-
-```
-npm run test:auth
-```
-
-To run only specific test suite with authorization
-
-```
-npm run test:auth -- <path to suite>
-```
-
-### Auto-fix and format
-
-```
-npm run lint
-```
-
-```
-npm run format
-```
-
-### Debugging in VSCode
-
-Press <kbd>F5</kbd> to debug.
-
-For more information, visit: https://code.visualstudio.com/docs/editor/debugging

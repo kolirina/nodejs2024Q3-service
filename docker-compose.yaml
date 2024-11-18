@@ -1,0 +1,43 @@
+services:
+  app:
+    container_name: homelib
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: sh -c "npx prisma migrate deploy && npm run start:prod"
+    depends_on:
+      - db
+    env_file:
+      - .env
+    working_dir: /app
+    ports:
+      - ${PORT}:${PORT}
+    networks:
+      - homelib-network
+    volumes:
+      - type: bind
+        source: ./static
+        target: /opt/app/static
+    restart: always
+
+  db:
+    build:
+      context: .
+      dockerfile: Dockerfile-db
+    container_name: homelib-db
+    env_file:
+      - .env
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    volumes:
+      - postgress-db-volume:/var/lib/postgresql/data
+    networks:
+      - homelib-network
+    restart: always
+
+volumes:
+  postgress-db-volume:
+
+networks:
+  homelib-network:
+    driver: bridge
